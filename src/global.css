@@ -1,0 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  /* padding: 0 50px; */
+  font-family: "Open Sans", sans-serif;
+}
+
+.d-f {
+  display: flex;
+}
+.d-f-c {
+  display: flex;
+  flex-direction: column;
+}
+.c-p {
+  cursor: pointer;
+}
