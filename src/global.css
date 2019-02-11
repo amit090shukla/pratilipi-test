@@ -3,7 +3,6 @@
   padding: 0;
 }
 body {
-  /* padding: 0 50px; */
   font-family: "Open Sans", sans-serif;
 }
 
@@ -16,4 +15,7 @@ body {
 }
 .c-p {
   cursor: pointer;
+}
+.s-b {
+  justify-content: space-between;
 }
