@@ -58,6 +58,9 @@ const styles = (theme: Theme) => ({
     "&:hover": {
       boxShadow: "0 0 30px #d2d2d2"
     },
+    [theme.breakpoints.down("md")]: {
+      width: "40%"
+    },
     [theme.breakpoints.down("sm")]: {
       width: "100%",
       marginRight: "0"
