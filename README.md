@@ -1,4 +1,4 @@
-You can test the app here [RentACar](few-sail.surge.sh).
+You can test the app here [RentACar](http://few-sail.surge.sh/).
 
 ## Demo
 
