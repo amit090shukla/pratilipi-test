@@ -15,12 +15,12 @@ const Header = (props: any) => {
     </Paper>
   );
 };
+//-----------------------------------------CSS----------------------------------------------------
 
 const styles = (theme: Theme) => ({
   root: {
     height: "50",
     padding: "10px 60px",
-    marginBottom: "10px",
     display: "flex",
     top: 0,
     backgroundColor: "#fff"

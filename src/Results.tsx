@@ -81,6 +81,7 @@ class Results extends React.Component<ResultsProps, any> {
         <div className={classes.meta}>{`${
           filteredCarData.length
         } Results`}</div>
+
         <div>
           <ClickAwayListener onClickAway={this.handleClickAway}>
             <div style={{ position: "relative" }}>
@@ -121,6 +122,7 @@ class Results extends React.Component<ResultsProps, any> {
             </div>
           </ClickAwayListener>
         </div>
+        {/* FILTER */}
       </div>
     );
   };
@@ -159,20 +161,25 @@ class Results extends React.Component<ResultsProps, any> {
     );
   }
 }
+//-----------------------------------------CSS----------------------------------------------------
 
 const styles = (theme: Theme) => ({
   root: {
     padding: "10px 50px",
-    marginTop: "30px"
+    marginTop: "30px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "10px"
+    }
   },
   searchResult: {
     display: "flex",
     marginTop: "20px"
   },
   subHead: {
-    top: "80px",
+    top: "50px",
     background: "#f3f3f3",
-    padding: "0 20px"
+    padding: "0 20px",
+    zIndex: 10
   },
   meta: {
     alignSelf: "center"

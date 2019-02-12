@@ -47,6 +47,7 @@ const ResultCard = (props: ResultCardProps) => {
     </Paper>
   );
 };
+//-----------------------------------------CSS----------------------------------------------------
 
 const styles = (theme: Theme) => ({
   root: {
@@ -58,7 +59,8 @@ const styles = (theme: Theme) => ({
       boxShadow: "0 0 30px #d2d2d2"
     },
     [theme.breakpoints.down("sm")]: {
-      width: "100%"
+      width: "100%",
+      marginRight: "0"
     }
   },
   price: {
@@ -72,7 +74,7 @@ const styles = (theme: Theme) => ({
     background: "#536dfe",
     color: "#fff",
     "&:disabled": {
-      color: "#000"
+      backgroundColor: "#d2d2d2"
     },
     "&:hover": {
       backgroundColor: "#536dfe"
