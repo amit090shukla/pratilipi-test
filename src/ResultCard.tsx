@@ -1,7 +1,7 @@
 //----------------------------------------IMPORTS----------------------------------------------
 import * as React from "react";
 import { withStyles, Theme } from "@material-ui/core/styles";
-import * as _ from "lodash";
+import map from "lodash/map";
 import { CARD_DATA } from "./data/result_card_data";
 import { Paper, Button } from "@material-ui/core";
 
@@ -20,14 +20,14 @@ const ResultCard = (props: ResultCardProps) => {
       <div>
         <img src={car["Photo"]} alt="" style={{ width: "100%" }} />
       </div>
-      {_.map(CARD_DATA, (data, index) => (
+      {map(CARD_DATA, (data, index) => (
         <div className={`${classes.fieldContainer} d-f`} key={index}>
           <span className={classes.label}>{data.label}</span>
           <span className={classes.value}>{car[data.key]}</span>
         </div>
       ))}
       <div className={`${classes.fieldContainer} d-f s-b`}>
-        {_.map(car["Availability"], day => {
+        {map(car["Availability"], day => {
           return <span>{day}</span>;
         })}
       </div>

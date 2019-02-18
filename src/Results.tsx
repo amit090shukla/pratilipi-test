@@ -3,18 +3,10 @@ import * as React from "react";
 import { withStyles, Theme } from "@material-ui/core/styles";
 import * as _ from "lodash";
 import ResultCard from "./ResultCard";
-import {
-  Button,
-  ClickAwayListener,
-  Paper,
-  IconButton
-} from "@material-ui/core";
-import { Sort } from "@material-ui/icons";
+import SortComponent from "./SortComponent";
+import FilterComponent from "./FilterComponent";
 
 //---------------------------------------STATE & PROPS INTERFACE-----------------------------------
-interface sort_option {
-  [key: string]: string;
-}
 
 export interface ResultsProps {
   carData: any;
@@ -23,17 +15,11 @@ export interface ResultsProps {
   classes: any;
 }
 
-const SORT_OPTIONS: sort_option = {
-  ASC: "₹ Low to high",
-  DEC: "₹ High to low"
-};
-
 //---------------------------------------RESULTS CLASS COMPONENT-----------------------------------
 
 class Results extends React.Component<ResultsProps, any> {
   state = {
     filteredCarData: [],
-    open: false,
     sort: null
   };
 
@@ -71,7 +57,7 @@ class Results extends React.Component<ResultsProps, any> {
   };
 
   renderHeader = () => {
-    const { filteredCarData, open, sort } = this.state;
+    const { filteredCarData, sort } = this.state;
     const { classes } = this.props;
     return (
       <div
@@ -82,61 +68,12 @@ class Results extends React.Component<ResultsProps, any> {
           filteredCarData.length
         } Results`}</div>
 
-        <div>
-          <ClickAwayListener onClickAway={this.handleClickAway}>
-            <div style={{ position: "relative" }}>
-              <IconButton>
-                <Sort
-                  style={{
-                    transform:
-                      sort === "ASC"
-                        ? "rotate(180deg) scale(1.3)"
-                        : "scale(1.3)"
-                  }}
-                />
-              </IconButton>
-              <Button onClick={this.handleClick} variant="outlined">
-                {sort ? SORT_OPTIONS[sort] : "SORT"}
-              </Button>
-              {open ? (
-                <Paper
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    padding: "10px"
-                  }}
-                >
-                  {_.map(SORT_OPTIONS, (option, index) => {
-                    return (
-                      <div
-                        key={index}
-                        onClick={() => this.sortCar(index)}
-                        style={{ marginBottom: "10px" }}
-                      >
-                        {option}
-                      </div>
-                    );
-                  })}
-                </Paper>
-              ) : null}
-            </div>
-          </ClickAwayListener>
+        <div className="d-f">
+          <SortComponent sort={sort} sortCar={this.sortCar} />
+          <FilterComponent />
         </div>
-        {/* FILTER */}
       </div>
     );
-  };
-
-  handleClick = () => {
-    this.setState((state: any) => ({
-      open: !state.open
-    }));
-  };
-
-  handleClickAway = () => {
-    this.setState({
-      open: false
-    });
   };
 
   //----------------------------------------------RENDER--------------------------------------------------
