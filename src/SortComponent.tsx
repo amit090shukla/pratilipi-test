@@ -105,11 +105,11 @@ const styles: any = (theme: Theme) => ({
 
   sortOptionContainer: {
     position: "absolute",
-    width: "100%",
     padding: "10px",
     [theme.breakpoints.down("sm")]: {
       backgroundColor: "#fff",
-      zIndex: "10"
+      zIndex: "10",
+      width: "80%"
     }
   }
 });

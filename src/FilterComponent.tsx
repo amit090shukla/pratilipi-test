@@ -1,5 +1,11 @@
 import React from "react";
-import { Button, ClickAwayListener, Paper } from "@material-ui/core";
+import {
+  Button,
+  ClickAwayListener,
+  Paper,
+  withStyles,
+  Theme
+} from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import map from "lodash/map";
 
@@ -21,6 +27,7 @@ interface FilterComponentProps {
   label: string;
   options: SelectOption[];
   applyFilter: (filters: string[]) => any;
+  classes: any;
 }
 
 class FilterComponent extends React.Component<
@@ -66,21 +73,19 @@ class FilterComponent extends React.Component<
   render() {
     const { props } = this,
       { open } = this.state;
+    const { classes } = props;
     return (
       <ClickAwayListener onClickAway={this.handleClickAway}>
         <div style={{ position: "relative" }} className="m-r-5">
-          <Button onClick={this.handleClick} variant="outlined">
+          <Button
+            onClick={this.handleClick}
+            variant="outlined"
+            className={classes.filterBtn}
+          >
             {this.props.label}
           </Button>
           {open ? (
-            <Paper
-              style={{
-                position: "absolute",
-                width: "150%",
-                padding: "10px",
-                left: "-50%"
-              }}
-            >
+            <Paper className={classes.filterOptionContainer}>
               {map(props.options, ({ name, value }: SelectOption) => {
                 return (
                   <div
@@ -112,4 +117,24 @@ class FilterComponent extends React.Component<
   }
 }
 
-export default FilterComponent;
+const styles: any = (theme: Theme) => ({
+  filterOptionContainer: {
+    position: "absolute",
+    width: "100%",
+    padding: "10px",
+    [theme.breakpoints.down("sm")]: {
+      backgroundColor: "#fff",
+      zIndex: "10"
+    }
+  },
+
+  filterBtn: {
+    padding: "10px",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      marginBottom: "5px"
+    }
+  }
+});
+
+export default withStyles(styles)(FilterComponent);

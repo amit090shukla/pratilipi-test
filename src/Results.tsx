@@ -5,7 +5,13 @@ import * as _ from "lodash";
 import ResultCard from "./ResultCard";
 import SortComponent from "./SortComponent";
 import FilterComponent from "./FilterComponent";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { FILTER_CATEGORY } from "./data/filter_category";
+import { Hidden, Paper } from "@material-ui/core";
 
 //---------------------------------------STATE & PROPS INTERFACE-----------------------------------
 
@@ -100,8 +106,35 @@ class Results extends React.Component<ResultsProps, any> {
     this.setState({ filteredCarData });
   };
 
+  getFilterSort = () => {
+    const { classes } = this.props;
+    const { sort } = this.state;
+    return (
+      <>
+        <SortComponent sort={sort} sortCar={this.sortCar} />
+        <span className={classes.divider}> | </span>
+        <div className={`${classes.filterContainer} d-f`}>
+          <FilterComponent
+            label={"Fuel Type"}
+            options={options["Fuel_Type"]}
+            applyFilter={this.applyFilter("Fuel_Type")}
+          />
+          <FilterComponent
+            label={"Car Type"}
+            options={options["Car_Type"]}
+            applyFilter={this.applyFilter("Car_Type")}
+          />
+          <FilterComponent
+            label={"Transmission"}
+            options={options["Transmission"]}
+            applyFilter={this.applyFilter("Transmission")}
+          />
+        </div>
+      </>
+    );
+  };
   renderHeader = () => {
-    const { filteredCarData, sort } = this.state;
+    const { filteredCarData } = this.state;
     const { classes } = this.props;
     return (
       <div
@@ -113,25 +146,19 @@ class Results extends React.Component<ResultsProps, any> {
         } Results`}</div>
 
         <div className={`${classes.actionContainer} d-f a-i-c`}>
-          <SortComponent sort={sort} sortCar={this.sortCar} />
-          <span className={classes.divider}> | </span>
-          <div className={`${classes.filterContainer} d-f`}>
-            <FilterComponent
-              label={"Fuel Type"}
-              options={options["Fuel_Type"]}
-              applyFilter={this.applyFilter("Fuel_Type")}
-            />
-            <FilterComponent
-              label={"Car Type"}
-              options={options["Car_Type"]}
-              applyFilter={this.applyFilter("Car_Type")}
-            />
-            <FilterComponent
-              label={"Transmission"}
-              options={options["Transmission"]}
-              applyFilter={this.applyFilter("Transmission")}
-            />
-          </div>
+          <Hidden smUp>
+            <ExpansionPanel style={{ width: "100%" }}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}>
+                  Sort & Filters
+                </Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails style={{ flexDirection: "column" }}>
+                {this.getFilterSort()}
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </Hidden>
+          <Hidden smDown>{this.getFilterSort()}</Hidden>
         </div>
       </div>
     );
@@ -193,9 +220,8 @@ const styles: any = (theme: Theme) => ({
   },
   filterContainer: {
     [theme.breakpoints.down("sm")]: {
-      flex: "1",
       width: "100%",
-      justifyContent: "space-between"
+      flexDirection: "column"
     }
   },
   divider: {
