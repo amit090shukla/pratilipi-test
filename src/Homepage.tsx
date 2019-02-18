@@ -23,6 +23,7 @@ interface HomepageState {
   selectedDate: any;
   selectedDay: string;
   showResults: boolean;
+  filteredCarData: any[];
 }
 //---------------------------------------HOMEPAGE CLASS COMPONENT-----------------------------------
 
@@ -33,7 +34,8 @@ class Homepage extends Component<HomepageProps, HomepageState> {
     selectedLocation: "",
     selectedDate: new Date(),
     selectedDay: DAYS[new Date().getDay()],
-    showResults: false
+    showResults: false,
+    filteredCarData: []
   };
   //-------------------------------------------LIFECYCLE METHODS----------------------------------------
 
@@ -61,7 +63,16 @@ class Homepage extends Component<HomepageProps, HomepageState> {
     });
   };
   validateOptions = () => {
-    this.setState({ showResults: true });
+    const { carData, selectedLocation } = this.state;
+    this.setState(
+      {
+        filteredCarData: _.filter(
+          carData,
+          val => val.Location == selectedLocation
+        )
+      },
+      () => this.setState({ showResults: true })
+    );
   };
 
   //---------------------------------------RENDER METHOD---------------------------------------------
@@ -72,7 +83,8 @@ class Homepage extends Component<HomepageProps, HomepageState> {
       showResults,
       selectedDay,
       selectedLocation,
-      carData
+      carData,
+      filteredCarData
     } = this.state;
     const { classes } = this.props;
 
@@ -81,7 +93,7 @@ class Homepage extends Component<HomepageProps, HomepageState> {
         <Header />
         {showResults ? (
           <Results
-            carData={carData}
+            carData={filteredCarData}
             selectedLocation={selectedLocation}
             selectedDay={selectedDay}
           />
@@ -221,66 +233,3 @@ const styles: any = (theme: Theme) => ({
 });
 
 export default withStyles(styles)(Homepage);
-
-{
-  /* const StyledHomeContainer = styled.div`
-  padding: 10px 50px;
-  justify-content: space-between;
-  margin-top: 80px;
-`;
-const StyledInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-`;
-const StyledSearchSection = styled.div`
-  width: 50%;
-`;
-const StyledPrimaryHead = styled.div`
-  font-size: 2em;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-const StyledSubHead = styled.p`
-  text-align: center;
-`;
-const StyledStepIndicator = styled.div`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #536dfe;
-  display: flex;
-`;
-
-const StyledStepCount = styled.div`
-  color: #fff;
-  font-weight: 600;
-  margin: 0 auto;
-  align-self: center;
-`;
-const StyledStepDescription = styled.span`
-  align-self: center;
-  margin-left: 10px;
-  font-weight: 600;
-`;
-
-const StyledSearchButton = styled.button`
-  background-color: #536dfe;
-  border: none;
-  padding: 10px 20px;
-  color: #fff;
-  margin-top: 20px;
-  :disabled {
-    background-color: #d2d2d2;
-    color: #000;
-  }
-`;
-
-const StyledErrorMsg = styled.div`
-  font-size: 0.8em;
-  color: red;
-  margin-top: 10px;
-`; */
-}

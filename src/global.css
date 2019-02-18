@@ -19,3 +19,15 @@ body {
 .s-b {
   justify-content: space-between;
 }
+.a-i-c {
+  align-items: center;
+}
+.m-r-5 {
+  margin-right: 5px;
+}
+.m-r-10 {
+  margin-right: 10px;
+}
+.m-r-20 {
+  margin-right: 20px;
+}

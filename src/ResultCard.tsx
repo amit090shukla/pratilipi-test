@@ -27,8 +27,8 @@ const ResultCard = (props: ResultCardProps) => {
         </div>
       ))}
       <div className={`${classes.fieldContainer} d-f s-b`}>
-        {map(car["Availability"], day => {
-          return <span>{day}</span>;
+        {map(car["Availability"], (day, key) => {
+          return <span key={key}>{day}</span>;
         })}
       </div>
       <div className="d-f s-b">

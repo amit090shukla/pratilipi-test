@@ -5,32 +5,50 @@ import * as _ from "lodash";
 import ResultCard from "./ResultCard";
 import SortComponent from "./SortComponent";
 import FilterComponent from "./FilterComponent";
+import { FILTER_CATEGORY } from "./data/filter_category";
 
 //---------------------------------------STATE & PROPS INTERFACE-----------------------------------
 
-export interface ResultsProps {
+interface ResultsProps {
   carData: any;
   selectedLocation: string;
   selectedDay: string;
   classes: any;
 }
 
+interface KeyValue {
+  [t: string]: string[];
+}
+
+interface ResultsState {
+  filters: KeyValue;
+}
+
+const options = {
+  Car_Type: [
+    { name: "Hatchback", value: "Hatchback" },
+    { name: "SUV", value: "SUV" },
+    { name: "Sedan", value: "Sedan" },
+    { name: "Mini SUV", value: "Mini SUV" }
+  ],
+  Fuel_Type: [
+    { name: "Petrol", value: "Petrol" },
+    { name: "Diesel", value: "Diesel" }
+  ],
+  Transmission: [
+    { name: "Manual", value: "Manual" },
+    { name: "Automatic", value: "Automatic" }
+  ]
+};
+
 //---------------------------------------RESULTS CLASS COMPONENT-----------------------------------
 
 class Results extends React.Component<ResultsProps, any> {
   state = {
-    filteredCarData: [],
-    sort: null
-  };
-
-  //-------------------------------------------LIFECYCLE METHODS----------------------------------------
-  componentDidMount = () => {
-    this.setState({
-      filteredCarData: _.filter(
-        this.props.carData,
-        val => val.Location == this.props.selectedLocation
-      )
-    });
+    filteredCarData: this.props.carData,
+    sort: null,
+    appliedFilter: [],
+    filters: {} as KeyValue
   };
 
   //---------------------------------------FUNCTIONS----------------------------------------------------
@@ -43,17 +61,43 @@ class Results extends React.Component<ResultsProps, any> {
   };
 
   sortCar = (sortKey: string) => {
-    const newSortedData = _.filter(
-      this.props.carData,
-      val => val.Location == this.props.selectedLocation
-    );
     this.setState({ sort: sortKey });
-    _.sortBy(newSortedData, obj => obj["Price"]);
+    const newSortedCarData = _.sortBy(
+      this.state.filteredCarData,
+      obj => obj["Price"]
+    );
+
     if (sortKey === "ASC") {
-      this.setState({ filteredCarData: newSortedData });
+      this.setState({
+        filteredCarData: newSortedCarData
+      });
     } else {
-      this.setState({ filteredCarData: newSortedData.reverse() });
+      this.setState({
+        filteredCarData: newSortedCarData.reverse()
+      });
     }
+  };
+
+  applyFilter = (category: string) => (values: string[]) => {
+    const filters = { ...this.state.filters };
+    filters[category] = values;
+    this.setState({ filters }, () => this.getFilteredData());
+  };
+
+  getFilteredData = () => {
+    const { state, props } = this,
+      filters = { ...state.filters };
+    let filteredCarData = { ...props.carData };
+    _.forEach(filters, (values, filterKey) => {
+      const filteredAppliedData = _.map(filteredCarData, data => {
+        if (_.includes(values, data[filterKey])) {
+          return data;
+        }
+        return null;
+      });
+      filteredCarData = filteredAppliedData.filter(Boolean);
+    });
+    this.setState({ filteredCarData });
   };
 
   renderHeader = () => {
@@ -68,9 +112,26 @@ class Results extends React.Component<ResultsProps, any> {
           filteredCarData.length
         } Results`}</div>
 
-        <div className="d-f">
+        <div className={`${classes.actionContainer} d-f a-i-c`}>
           <SortComponent sort={sort} sortCar={this.sortCar} />
-          <FilterComponent />
+          <span className={classes.divider}> | </span>
+          <div className={`${classes.filterContainer} d-f`}>
+            <FilterComponent
+              label={"Fuel Type"}
+              options={options["Fuel_Type"]}
+              applyFilter={this.applyFilter("Fuel_Type")}
+            />
+            <FilterComponent
+              label={"Car Type"}
+              options={options["Car_Type"]}
+              applyFilter={this.applyFilter("Car_Type")}
+            />
+            <FilterComponent
+              label={"Transmission"}
+              options={options["Transmission"]}
+              applyFilter={this.applyFilter("Transmission")}
+            />
+          </div>
         </div>
       </div>
     );
@@ -87,8 +148,8 @@ class Results extends React.Component<ResultsProps, any> {
           <div className={classes.searchResult} style={{ flexWrap: "wrap" }}>
             {_.map(filteredCarData, (car, index) => (
               <ResultCard
-                car={car}
                 key={index}
+                car={car}
                 isAvailableOnSelectedDay={this.isAvailableOnSelectedDay}
               />
             ))}
@@ -100,7 +161,7 @@ class Results extends React.Component<ResultsProps, any> {
 }
 //-----------------------------------------CSS----------------------------------------------------
 
-const styles = (theme: Theme) => ({
+const styles: any = (theme: Theme) => ({
   root: {
     padding: "10px 50px",
     marginTop: "30px",
@@ -119,7 +180,29 @@ const styles = (theme: Theme) => ({
     zIndex: 10
   },
   meta: {
-    alignSelf: "center"
+    alignSelf: "center",
+    [theme.breakpoints.down("sm")]: {
+      display: "none"
+    }
+  },
+  actionContainer: {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      flexDirection: "column"
+    }
+  },
+  filterContainer: {
+    [theme.breakpoints.down("sm")]: {
+      flex: "1",
+      width: "100%",
+      justifyContent: "space-between"
+    }
+  },
+  divider: {
+    margin: "0 25px",
+    [theme.breakpoints.down("sm")]: {
+      display: "none"
+    }
   }
 });
 

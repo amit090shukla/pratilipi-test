@@ -1,40 +1,35 @@
 import React from "react";
-import {
-  Button,
-  ClickAwayListener,
-  Paper,
-  IconButton
-} from "@material-ui/core";
-import { FilterList } from "@material-ui/icons";
+import { Button, ClickAwayListener, Paper } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import map from "lodash/map";
 
 interface filter_type {
-  [key: string]: string;
+  [key: string]: boolean;
 }
-const FILTER_TYPE: filter_type = {
-  Petrol: "Petrol",
-  Diesel: "Diesel",
-  Manual: "Manual",
-  Automatic: "Automatic"
-};
+
+interface SelectOption {
+  name: string;
+  value: string;
+}
 
 interface FilterComponentState {
-  filter: {
-    [key: string]: boolean;
-  };
   open: boolean;
+  filters: filter_type;
 }
 
-class FilterComponent extends React.Component<{}, FilterComponentState> {
+interface FilterComponentProps {
+  label: string;
+  options: SelectOption[];
+  applyFilter: (filters: string[]) => any;
+}
+
+class FilterComponent extends React.Component<
+  FilterComponentProps,
+  FilterComponentState
+> {
   state: FilterComponentState = {
-    filter: {
-      Petrol: false,
-      Diesel: false,
-      Manual: false,
-      Automatic: false
-    },
-    open: false
+    open: false,
+    filters: {} as filter_type
   };
 
   handleClick = () => {
@@ -49,49 +44,64 @@ class FilterComponent extends React.Component<{}, FilterComponentState> {
     });
   };
 
-  handleChange = (name: string) => (event: any) => {
-    this.setState({
-      filter: { ...this.state.filter, [name]: event.target.checked }
+  handleChange = (value: string) => () => {
+    const filters = { ...this.state.filters };
+    if (filters[value]) {
+      delete filters[value];
+    } else {
+      filters[value] = true;
+    }
+    this.setState({ filters });
+  };
+
+  applyFilters = () => {
+    let selected: string[] = [];
+    map(this.state.filters, (val: boolean, key: string) => {
+      if (val === true) selected.push(key);
     });
+    this.setState({ open: false });
+    this.props.applyFilter(selected);
   };
 
   render() {
-    const { open } = this.state;
+    const { props } = this,
+      { open } = this.state;
     return (
       <ClickAwayListener onClickAway={this.handleClickAway}>
-        <div style={{ position: "relative" }}>
-          <IconButton>
-            <FilterList />
-          </IconButton>
+        <div style={{ position: "relative" }} className="m-r-5">
           <Button onClick={this.handleClick} variant="outlined">
-            FILTER
+            {this.props.label}
           </Button>
           {open ? (
             <Paper
               style={{
                 position: "absolute",
-                width: "100%",
-                padding: "10px"
+                width: "150%",
+                padding: "10px",
+                left: "-50%"
               }}
             >
-              {map(FILTER_TYPE, (val: string, key: number) => {
+              {map(props.options, ({ name, value }: SelectOption) => {
                 return (
                   <div
                     className="d-f s-b"
                     style={{ alignItems: "center" }}
-                    key={key}
+                    key={value}
                   >
-                    <span>{val}</span>
+                    <span>{name}</span>
                     <Checkbox
-                      checked={this.state.filter[val]}
-                      onChange={this.handleChange(val)}
-                      value={this.state.filter[val]}
+                      checked={this.state.filters[value]}
+                      onChange={this.handleChange(value)}
                       color="primary"
                     />
                   </div>
                 );
               })}
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.applyFilters}
+              >
                 Apply
               </Button>
             </Paper>
